@@ -13,7 +13,7 @@
 
 %define		_rel	0.1
 Summary:	Zaptel _compatible_ telephony device support
-#Summary(pl):	Obs³uga urz±dzeñ telefonicznych _zgodnych_ z Zaptel
+Summary(pl):	Obs³uga urz±dzeñ telefonicznych _zgodnych_ z Zaptel
 Name:		zaptel-alt
 Version:	1.2.1
 Release:	%{_rel}
@@ -39,6 +39,7 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 Zaptel _compatible_ telephony device driver. The main diffrence is in
 hardware is manufactuer and price. Note: PCI card design is under Gnu
 GPL license.
+
 Note: the main change is in tor2.o, providing support for:
 Bridge: PLX Technology, Inc. Unknown device 4000 (rev 01)
 0680: 10b5:4000 (rev 01),         Subsystem: 10b5:9030
@@ -48,7 +49,8 @@ Also known as e400p.
 Sterownik do urz±dzeñ telefonicznych _kompatybilnych_ z Zaptel. G³ówn±
 ró¿nic± jest producent i cena sprzêtu. Zauwa¿ ¿e projekt karty PCI
 jest na na licencji GNU/GPL.
-Notka: g³ówn± ró¿nic± jest sterownik  tor2.o obs³guj±cy kartê:
+
+Uwaga: g³ówn± ró¿nic± jest sterownik tor2.o obs³guj±cy kartê:
 "Bridge: PLX Technology, Inc. Unknown device 4000 (rev 01)
 0680: 10b5:4000 (rev 01),         Subsystem: 10b5:9030"
 Znan± jako e400p.
