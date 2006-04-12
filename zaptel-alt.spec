@@ -31,8 +31,8 @@ BuildRequires:	kernel-module-build
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.153
 BuildRequires:	sed >= 4.0
-Conflicts:	zaptel
 Obsoletes:	zaptel
+Conflicts:	zaptel
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
 %description
@@ -40,20 +40,18 @@ Zaptel _compatible_ telephony device driver. The main diffrence is in
 hardware is manufactuer and price. Note: PCI card design is under Gnu
 GPL license.
 
-Note: the main change is in tor2.o, providing support for:
-Bridge: PLX Technology, Inc. Unknown device 4000 (rev 01)
-0680: 10b5:4000 (rev 01),         Subsystem: 10b5:9030
-Also known as e400p.
+Note: the main change is in tor2.o, providing support for: Bridge: PLX
+Technology, Inc. Unknown device 4000 (rev 01) 0680: 10b5:4000 (rev
+01), Subsystem: 10b5:9030 Also known as e400p.
 
 %description -l pl
 Sterownik do urz±dzeñ telefonicznych _kompatybilnych_ z Zaptel. G³ówn±
 ró¿nic± jest producent i cena sprzêtu. Zauwa¿ ¿e projekt karty PCI
 jest na na licencji GNU/GPL.
 
-Uwaga: g³ówn± ró¿nic± jest sterownik tor2.o obs³guj±cy kartê:
-"Bridge: PLX Technology, Inc. Unknown device 4000 (rev 01)
-0680: 10b5:4000 (rev 01),         Subsystem: 10b5:9030"
-Znan± jako e400p.
+Uwaga: g³ówn± ró¿nic± jest sterownik tor2.o obs³guj±cy kartê: "Bridge:
+PLX Technology, Inc. Unknown device 4000 (rev 01) 0680: 10b5:4000 (rev
+01), Subsystem: 10b5:9030" Znan± jako e400p.
 
 %package devel
 Summary:	Zaptel _compatible_ development headers
