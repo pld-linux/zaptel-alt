@@ -158,7 +158,7 @@ for cfg in %{buildconfigs}; do
 %endif
 	ln -sf %{_kernelsrcdir}/Module.symvers-$cfg Module.symvers
 	touch include/config/MARKER
-%if %{without dist_kernel}
+%if !%{with dist_kernel}
 	mkdir -p scripts/{basic,mod}
 	ln -sf %{_kernelsrcdir}/scripts/mod/modpost scripts/mod/modpost
 	ln -sf %{_kernelsrcdir}/scripts/basic/fixdep scripts/basic/fixdep
