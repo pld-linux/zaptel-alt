@@ -13,7 +13,7 @@
 
 %define		_rel	0.1
 Summary:	Zaptel _compatible_ telephony device support
-Summary(pl):	Obs³uga urz±dzeñ telefonicznych _zgodnych_ z Zaptel
+Summary(pl.UTF-8):   ObsÅ‚uga urzÄ…dzeÅ„ telefonicznych _zgodnych_ z Zaptel
 Name:		zaptel-alt
 Version:	1.2.1
 Release:	%{_rel}
@@ -44,41 +44,41 @@ Note: the main change is in tor2.o, providing support for: Bridge: PLX
 Technology, Inc. Unknown device 4000 (rev 01) 0680: 10b5:4000 (rev
 01), Subsystem: 10b5:9030 Also known as e400p.
 
-%description -l pl
-Sterownik do urz±dzeñ telefonicznych _kompatybilnych_ z Zaptel. G³ówn±
-ró¿nic± jest producent i cena sprzêtu. Zauwa¿ ¿e projekt karty PCI
+%description -l pl.UTF-8
+Sterownik do urzÄ…dzeÅ„ telefonicznych _kompatybilnych_ z Zaptel. GÅ‚Ã³wnÄ…
+rÃ³Å¼nicÄ… jest producent i cena sprzÄ™tu. ZauwaÅ¼ Å¼e projekt karty PCI
 jest na na licencji GNU/GPL.
 
-Uwaga: g³ówn± ró¿nic± jest sterownik tor2.o obs³guj±cy kartê: "Bridge:
+Uwaga: gÅ‚Ã³wnÄ… rÃ³Å¼nicÄ… jest sterownik tor2.o obsÅ‚gujÄ…cy kartÄ™: "Bridge:
 PLX Technology, Inc. Unknown device 4000 (rev 01) 0680: 10b5:4000 (rev
-01), Subsystem: 10b5:9030" Znan± jako e400p.
+01), Subsystem: 10b5:9030" ZnanÄ… jako e400p.
 
 %package devel
 Summary:	Zaptel _compatible_ development headers
-Summary(pl):	Pliki nag³ówkowe _zgodne_ z Zaptel
+Summary(pl.UTF-8):   Pliki nagÅ‚Ã³wkowe _zgodne_ z Zaptel
 Group:		Development/Libraries
 Requires:	%{name} = %{version}-%{_rel}
 
 %description devel
 Zaptel development headers.
 
-%description devel -l pl
-Pliki nag³ówkowe Zaptel.
+%description devel -l pl.UTF-8
+Pliki nagÅ‚Ã³wkowe Zaptel.
 
 %package utils
 Summary:	Zaptel utility programs
-Summary(pl):	Programy narzêdziowe Zaptel
+Summary(pl.UTF-8):   Programy narzÄ™dziowe Zaptel
 Group:		Applications/Communications
 
 %description utils
 Zaptel card utility programs, mainly for diagnostics.
 
-%description utils -l pl
-Programy narzêdziowe do kart Zaptel, s³u¿±ce g³ównie do diagnostyki.
+%description utils -l pl.UTF-8
+Programy narzÄ™dziowe do kart Zaptel, sÅ‚uÅ¼Ä…ce gÅ‚Ã³wnie do diagnostyki.
 
 %package init
 Summary:	Zaptel init scripts
-Summary(pl):	Skrypty inicjalizuj±ce Zaptel
+Summary(pl.UTF-8):   Skrypty inicjalizujÄ…ce Zaptel
 Group:		Applications/Communications
 Requires(post,preun):	/sbin/chkconfig
 Requires(pre):	/bin/id
@@ -88,12 +88,12 @@ Requires:	%{name}-utils = %{version}-%{_rel}
 %description init
 Zaptel boot-time initialization.
 
-%description init -l pl
+%description init -l pl.UTF-8
 Inicjalizacja Zaptel w czasie startu systemu.
 
 %package -n kernel-%{name}
 Summary:	Zaptel Linux kernel driver
-Summary(pl):	Sterownik Zaptel dla j±dra Linuksa
+Summary(pl.UTF-8):   Sterownik Zaptel dla jÄ…dra Linuksa
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_up}
@@ -102,12 +102,12 @@ Requires(post,postun):	/sbin/depmod
 %description -n kernel-%{name}
 Zaptel telephony Linux kernel driver.
 
-%description -n kernel-%{name} -l pl
-Sterownik dla j±dra Linuksa do urz±dzeñ telefonicznych Zaptel.
+%description -n kernel-%{name} -l pl.UTF-8
+Sterownik dla jÄ…dra Linuksa do urzÄ…dzeÅ„ telefonicznych Zaptel.
 
 %package -n kernel-smp-%{name}
 Summary:	Zaptel Linux SMP kernel driver
-Summary(pl):	Sterownik Zaptel dla j±dra Linuksa SMP
+Summary(pl.UTF-8):   Sterownik Zaptel dla jÄ…dra Linuksa SMP
 Release:	%{_rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
 %{?with_dist_kernel:%requires_releq_kernel_smp}
@@ -116,8 +116,8 @@ Requires(post,postun):	/sbin/depmod
 %description -n kernel-smp-%{name}
 Zaptel telephony Linux SMP kernel driver.
 
-%description -n kernel-smp-%{name} -l pl
-Sterownik dla j±dra Linuksa SMP do urz±dzeñ telefonicznych Zaptel.
+%description -n kernel-smp-%{name} -l pl.UTF-8
+Sterownik dla jÄ…dra Linuksa SMP do urzÄ…dzeÅ„ telefonicznych Zaptel.
 
 %prep
 %setup -q -n %{_base_name}-%{version}
