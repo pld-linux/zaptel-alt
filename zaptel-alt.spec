@@ -33,6 +33,7 @@ URL:		http://www.asterisk.org/
 BuildRequires:	kernel-module-build
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.153
+BuildRequires:	ncurses-devel
 BuildRequires:	sed >= 4.0
 Obsoletes:	zaptel
 Conflicts:	zaptel
