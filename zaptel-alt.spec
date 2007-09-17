@@ -15,25 +15,29 @@ Version:	1.4.4
 Release:	%{_rel}
 License:	GPL
 Group:		Base/Kernel
-Source0:	http://e400p.pbxhardware.com/driver/%{_base_name}-%{version}.tar.gz
+# there are also E400 and T400 (beside TE400) different drivers
+Source0:	http://te400p.pbxhardware.com/driver/%{_base_name}-%{version}.tar.gz
 # Source0-md5:	7d96ae8f12302950740f8df5872e0517
 Source1:	%{_base_name}.init
 Source2:	%{_base_name}.sysconfig
 Source3:        http://ftp.digium.com/pub/telephony/firmware/releases/zaptel-fw-oct6114-064-1.05.01.tar.gz
-# Source3-md5:  18e6e6879070a8d61068e1c87b8c2b22
+# Source3-md5:	18e6e6879070a8d61068e1c87b8c2b22
 Source4:        http://ftp.digium.com/pub/telephony/firmware/releases/zaptel-fw-oct6114-128-1.05.01.tar.gz
-# Source4-md5:  c46a13f468b53828dc5c78f0eadbefd4
+# Source4-md5:	c46a13f468b53828dc5c78f0eadbefd4
 Source5:        http://ftp.digium.com/pub/telephony/firmware/releases/zaptel-fw-tc400m-MR5.6.tar.gz
-# Source5-md5:  ec5c96f7508bfb0e0b8be768ea5f3aa2
+# Source5-md5:	ec5c96f7508bfb0e0b8be768ea5f3aa2
 Source6:        http://downloads.digium.com/pub/telephony/firmware/releases/zaptel-fw-vpmadt032-1.07.tar.gz
-# Source6-md5:  7916c630a68fcfd38ead6caf9b55e5a1
+# Source6-md5:	7916c630a68fcfd38ead6caf9b55e5a1
 Patch0:		%{name}-make.patch
 URL:		http://www.asterisk.org/
 %if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel-module-build
 %endif
 BuildRequires:	rpmbuild(macros) >= 1.153
+BuildRequires:	libusb-devel
 BuildRequires:	ncurses-devel
+BuildRequires:	newt-devel
+BuildRequires:	perl-tools-pod
 BuildRequires:	sed >= 4.0
 Obsoletes:	zaptel
 Conflicts:	zaptel
