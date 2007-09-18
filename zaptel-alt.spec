@@ -17,7 +17,7 @@ License:	GPL
 Group:		Base/Kernel
 # there are also E400 and T400 (beside TE400) different drivers
 Source0:	http://te400p.pbxhardware.com/driver/%{_base_name}-%{version}.tar.gz
-# Source0-md5:	7d96ae8f12302950740f8df5872e0517
+# Source0-md5:	85186a2924a3ca57d18a71ab4205e3ef
 Source1:	%{_base_name}.init
 Source2:	%{_base_name}.sysconfig
 Source3:        http://ftp.digium.com/pub/telephony/firmware/releases/zaptel-fw-oct6114-064-1.05.01.tar.gz
@@ -29,6 +29,7 @@ Source5:        http://ftp.digium.com/pub/telephony/firmware/releases/zaptel-fw-
 Source6:        http://downloads.digium.com/pub/telephony/firmware/releases/zaptel-fw-vpmadt032-1.07.tar.gz
 # Source6-md5:	7916c630a68fcfd38ead6caf9b55e5a1
 Patch0:		%{name}-make.patch
+Patch1:		%{name}-pciid.patch
 URL:		http://www.asterisk.org/
 %if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel-module-build
@@ -128,6 +129,7 @@ Sterownik dla jądra Linuksa do urządzeń telefonicznych Zaptel.
 %prep
 %setup -q -n %{_base_name}-%{version}
 %patch0 -p1
+%patch1 -p1
 
 %define buildconfigs %{?with_dist_kernel:dist}%{!?with_dist_kernel:nondist}
 
