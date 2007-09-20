@@ -3,6 +3,7 @@
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
+%bcond_without	eu		# eu settings
 #
 %define _base_name zaptel
 #
@@ -132,6 +133,10 @@ Sterownik dla jądra Linuksa do urządzeń telefonicznych Zaptel.
 %patch1 -p1
 
 %define buildconfigs %{?with_dist_kernel:dist}%{!?with_dist_kernel:nondist}
+
+%if %{with eu}
+sed -i -e 's|.*SHORT_FLASH_TIME.*|#define SHORT_FLASH_TIME 1|g' zconfig.h
+%endif
 
 %build
 %configure
