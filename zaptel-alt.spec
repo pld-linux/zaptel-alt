@@ -8,7 +8,7 @@
 %define _base_name zaptel
 #
 
-%define		_rel	0.1
+%define		_rel	0.2
 Summary:	Zaptel _compatible_ telephony device support
 Summary(pl.UTF-8):	Obsługa urządzeń telefonicznych _zgodnych_ z Zaptel
 Name:		zaptel-alt
@@ -31,6 +31,7 @@ Source6:        http://downloads.digium.com/pub/telephony/firmware/releases/zapt
 # Source6-md5:	7916c630a68fcfd38ead6caf9b55e5a1
 Patch0:		%{name}-make.patch
 Patch1:		%{name}-pciid.patch
+Patch2:		%{name}-oslec.patch
 URL:		http://www.asterisk.org/
 %if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel-module-build
@@ -131,6 +132,7 @@ Sterownik dla jądra Linuksa do urządzeń telefonicznych Zaptel.
 %setup -q -n %{_base_name}-%{version}
 %patch0 -p1
 %patch1 -p1
+%patch2 -p1
 
 %define buildconfigs %{?with_dist_kernel:dist}%{!?with_dist_kernel:nondist}
 
