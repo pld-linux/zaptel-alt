@@ -4,6 +4,7 @@
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
 %bcond_without	eu		# eu settings
+%bcond_with	oslec
 #
 %define _base_name zaptel
 #
@@ -132,7 +133,7 @@ Sterownik dla jądra Linuksa do urządzeń telefonicznych Zaptel.
 %setup -q -n %{_base_name}-%{version}
 %patch0 -p1
 %patch1 -p1
-%patch2 -p1
+%{?with_oslec:%patch2 -p1}
 
 %define buildconfigs %{?with_dist_kernel:dist}%{!?with_dist_kernel:nondist}
 
