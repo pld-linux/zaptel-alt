@@ -102,7 +102,7 @@ Sterownik do urządzeń telefonicznych Zaptel.
 Summary:	Zaptel development headers
 Summary(pl.UTF-8):	Pliki nagłówkowe Zaptel
 Group:		Development/Libraries
-Requires:	%{pname} = %{version}-%{rel}
+Requires:	%{name} = %{version}-%{rel}
 %{?with_bristuff:Provides:	zaptel-devel(bristuff)}
 
 %description devel
@@ -115,7 +115,7 @@ Pliki nagłówkowe Zaptel.
 Summary:	Zaptel static library
 Summary(pl.UTF-8):	Biblioteka statyczna Zaptel
 Group:		Development/Libraries
-Requires:	%{pname}-devel = %{version}-%{rel}
+Requires:	%{name}-devel = %{version}-%{rel}
 %{?with_bristuff:Provides:	zaptel-static(bristuff)}
 
 %description static
@@ -140,7 +140,7 @@ Summary:	Zaptel init scripts
 Summary(pl.UTF-8):	Skrypty inicjalizujące Zaptel
 Group:		Applications/Communications
 Requires(post,preun):	/sbin/chkconfig
-Requires:	%{pname}-utils = %{version}-%{rel}
+Requires:	%{name}-utils = %{version}-%{rel}
 Requires:	rc-scripts
 
 %description init
@@ -171,7 +171,7 @@ Sterownik dla jądra Linuksa do urządzeń telefonicznych Zaptel.
 Summary:	Perl interface to Zaptel
 Summary(pl.UTF-8):	Perlowy interfejs do Zaptela
 Group:		Development/Languages/Perl
-Requires:	%{pname} = %{version}-%{rel}
+Requires:	%{name} = %{version}-%{rel}
 
 %description -n perl-Zaptel
 Perl inferface to Zaptel.
