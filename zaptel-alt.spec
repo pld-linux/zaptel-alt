@@ -1,76 +1,109 @@
-#
+
 # Conditional build:
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
-%bcond_without	eu		# eu settings
-%bcond_with	oslec
-#
-%define _base_name zaptel
-#
+%bcond_with	oslec		# with Open Source Line Echo Canceller
+%bcond_with	bristuff	# with bristuff support
+%bcond_without	xpp		# without Astribank
+%bcond_with	verbose
 
-%define		_rel	0.3
-Summary:	Zaptel _compatible_ telephony device support
-Summary(pl.UTF-8):	Obsługa urządzeń telefonicznych _zgodnych_ z Zaptel
-Name:		zaptel-alt
-Version:	1.4.4
-Release:	%{_rel}
+%ifarch sparc
+%undefine	with_smp
+%endif
+%ifarch alpha
+%undefine	with_xpp
+%endif
+
+%if %{without kernel}
+%undefine	with_dist_kernel
+%endif
+%if "%{_alt_kernel}" != "%{nil}"
+%undefine	with_userspace
+%endif
+%if %{without userspace}
+# nothing to be placed to debuginfo package
+%define		_enable_debug_packages	0
+%endif
+
+%define		rel	1
+%define		pname	zaptel
+%define		FIRMWARE_URL http://downloads.digium.com/pub/telephony/firmware/releases
+Summary:	Zaptel telephony device support
+Summary(pl.UTF-8):	Obsługa urządzeń telefonicznych Zaptel
+Name:		%{pname}-alt%{_alt_kernel}
+Version:	1.4.10.1
+Release:	%{rel}%{?with_bristuff:.bristuff}
 License:	GPL
 Group:		Base/Kernel
 # there are also E400 and T400 (beside TE400) different drivers
-Source0:	http://te400p.pbxhardware.com/driver/%{_base_name}-%{version}.tar.gz
-# Source0-md5:	85186a2924a3ca57d18a71ab4205e3ef
-Source1:	%{_base_name}.init
-Source2:	%{_base_name}.sysconfig
-Source3:        http://ftp.digium.com/pub/telephony/firmware/releases/zaptel-fw-oct6114-064-1.05.01.tar.gz
+Source0:        http://te400p.pbxhardware.com/driver/%{pname}-%{version}.tar.gz
+# Source0-md5:	9a600ab54a209f03027ba5bbd3630f67
+Source1:	%{pname}.init
+Source2:	%{pname}.sysconfig
+Source3:	%{FIRMWARE_URL}/zaptel-fw-oct6114-064-1.05.01.tar.gz
 # Source3-md5:	18e6e6879070a8d61068e1c87b8c2b22
-Source4:        http://ftp.digium.com/pub/telephony/firmware/releases/zaptel-fw-oct6114-128-1.05.01.tar.gz
+Source4:	%{FIRMWARE_URL}/zaptel-fw-oct6114-128-1.05.01.tar.gz
 # Source4-md5:	c46a13f468b53828dc5c78f0eadbefd4
-Source5:        http://ftp.digium.com/pub/telephony/firmware/releases/zaptel-fw-tc400m-MR5.6.tar.gz
-# Source5-md5:	ec5c96f7508bfb0e0b8be768ea5f3aa2
-Source6:        http://downloads.digium.com/pub/telephony/firmware/releases/zaptel-fw-vpmadt032-1.07.tar.gz
-# Source6-md5:	7916c630a68fcfd38ead6caf9b55e5a1
+Source5:	%{FIRMWARE_URL}/zaptel-fw-vpmadt032-1.07.tar.gz
+# Source5-md5:	7916c630a68fcfd38ead6caf9b55e5a1
+Source6:	%{FIRMWARE_URL}/zaptel-fw-tc400m-MR6.12.tar.gz
+# Source6-md5:	c57f41fae88f129e14fcaf41e4df90dc
 Patch0:		%{name}-make.patch
-Patch1:		%{name}-pciid.patch
-Patch2:		%{name}-oslec.patch
-Patch3:		%{name}-pci.patch
+Patch1:		%{name}-oslec.patch
+Patch2:		%{name}-bristuff.patch
+Patch3:		%{name}-sparc.patch
+Patch4:		%{name}-kernel.patch
+Patch5:		%{name}-class_device_removed.patch
+Patch6:		%{name}-sem.patch
 URL:		http://www.asterisk.org/
 %if %{with kernel} && %{with dist_kernel}
-BuildRequires:	kernel-module-build
+BuildRequires:	kernel%{_alt_kernel}-module-build
+BuildRequires:	module-init-tools
 %endif
-BuildRequires:	rpmbuild(macros) >= 1.153
-BuildRequires:	libusb-devel
-BuildRequires:	ncurses-devel
 BuildRequires:	newt-devel
+BuildRequires:	perl-base
 BuildRequires:	perl-tools-pod
-BuildRequires:	sed >= 4.0
-Obsoletes:	zaptel
-Conflicts:	zaptel
+BuildRequires:	rpmbuild(macros) >= 1.379
+%{?with_bristuff:Provides:	zaptel(bristuff)}
 BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 
-%description
-Zaptel _compatible_ telephony device driver. The main diffrence is in
-hardware is manufactuer and price. Note: PCI card design is under Gnu
-GPL license.
+%define		_smp_mflags	-j1
 
-Note: the main change is in tor2.o, providing support for: Bridge: PLX
-Technology, Inc. Unknown device 4000 (rev 01) 0680: 10b5:4000 (rev
-01), Subsystem: 10b5:9030 Also known as e400p.
+# Rules:
+# - modules_X: single modules, just name module with no suffix
+# - modules_X: subdir modules are just directory name with slash like dirname/
+# - keep X and X_in in sync
+# - X is used for actual building (entries separated with space), X_in for pld macros (entries separated with comma)
+
+%define	modules_1	zaptel.o ztd-eth.o ztd-loc.o pciradio.o tor2.o torisa.o wcfxo.o wct1xxp.o wctdm.o wcte11xp.o wcusb.o ztdummy.o ztdynamic.o
+%define	modules_1_in	zaptel,ztd-eth,ztd-loc,pciradio,tor2,torisa,wcfxo,wct1xxp,wctdm,wcte11xp,wcusb,ztdummy,ztdynamic
+
+%define	modules_2	wct4xxp/ wcte12xp/ %{?with_xpp:xpp/}
+%define	modules_2_in	wct4xxp/wct4xxp,wcte12xp/wcte12xp%{?with_xpp:,xpp/{%{?with_bristuff:xpd_bri,}xpd_fxo,xpd_fxs,xpd_pri,xpp,xpp_usb}}
+%ifnarch alpha
+%define	modules_nalpha	wctc4xxp/ wctdm24xxp/ zttranscode.o
+%define	modules_nalpha_in	wctc4xxp/wctc4xxp,wctdm24xxp/wctdm24xxp,zttranscode
+%endif
+%if %{with bristuff}
+%define	modules_bristuff cwain/ qozap/ vzaphfc/ zaphfc/ ztgsm/ opvxa1200.o wcopenpci.o
+%define	modules_bristuff_in	cwain/cwain,qozap/qozap,vzaphfc/vzaphfc,zaphfc/zaphfc,ztgsm/ztgsm,opvxa1200,wcopenpci
+%endif
+%define	modules		%{modules_1} %{modules_2}%{?modules_nalpha: %{modules_nalpha}}%{?modules_bristuff: %{modules_bristuff}}
+%define	modules_in	%{modules_1_in},%{modules_2_in}%{?modules_nalpha:,%{modules_nalpha_in}}%{?modules_bristuff:,%{modules_bristuff_in}}
+
+%description
+Zaptel telephony device driver.
 
 %description -l pl.UTF-8
-Sterownik do urządzeń telefonicznych _kompatybilnych_ z Zaptel. Główną
-różnicą jest producent i cena sprzętu. Zauważ że projekt karty PCI
-jest na na licencji GNU/GPL.
-
-Uwaga: główną różnicą jest sterownik tor2.o obsłgujący kartę: "Bridge:
-PLX Technology, Inc. Unknown device 4000 (rev 01) 0680: 10b5:4000 (rev
-01), Subsystem: 10b5:9030" Znaną jako e400p.
+Sterownik do urządzeń telefonicznych Zaptel.
 
 %package devel
-Summary:	Zaptel _compatible_ development headers
-Summary(pl.UTF-8):	Pliki nagłówkowe _zgodne_ z Zaptel
+Summary:	Zaptel development headers
+Summary(pl.UTF-8):	Pliki nagłówkowe Zaptel
 Group:		Development/Libraries
-Requires:	%{name} = %{version}-%{_rel}
+Requires:	%{pname} = %{version}-%{rel}
+%{?with_bristuff:Provides:	zaptel-devel(bristuff)}
 
 %description devel
 Zaptel development headers.
@@ -79,10 +112,11 @@ Zaptel development headers.
 Pliki nagłówkowe Zaptel.
 
 %package static
-Summary:        Zaptel static library
-Summary(pl.UTF-8):      Biblioteka statyczna Zaptel
-Group:          Development/Libraries
-Requires:       %{name}-devel = %{version}-%{_rel}
+Summary:	Zaptel static library
+Summary(pl.UTF-8):	Biblioteka statyczna Zaptel
+Group:		Development/Libraries
+Requires:	%{pname}-devel = %{version}-%{rel}
+%{?with_bristuff:Provides:	zaptel-static(bristuff)}
 
 %description static
 Zaptel static library.
@@ -106,9 +140,8 @@ Summary:	Zaptel init scripts
 Summary(pl.UTF-8):	Skrypty inicjalizujące Zaptel
 Group:		Applications/Communications
 Requires(post,preun):	/sbin/chkconfig
-Requires(pre):	/bin/id
-Requires(pre):	sh-utils
-Requires:	%{name}-utils = %{version}-%{_rel}
+Requires:	%{pname}-utils = %{version}-%{rel}
+Requires:	rc-scripts
 
 %description init
 Zaptel boot-time initialization.
@@ -116,153 +149,155 @@ Zaptel boot-time initialization.
 %description init -l pl.UTF-8
 Inicjalizacja Zaptel w czasie startu systemu.
 
-%package -n kernel-%{name}
+%package -n kernel%{_alt_kernel}-%{pname}
 Summary:	Zaptel Linux kernel driver
 Summary(pl.UTF-8):	Sterownik Zaptel dla jądra Linuksa
-Release:	%{_rel}@%{_kernel_ver_str}
+Release:	%{rel}@%{_kernel_ver_str}
 Group:		Base/Kernel
-%{?with_dist_kernel:%requires_releq_kernel}
 Requires(post,postun):	/sbin/depmod
+%if %{with dist_kernel}
+%requires_releq_kernel
+Requires(postun):	%releq_kernel
+%{?with_oslec:Requires:	kernel-misc-oslec = 20070608-0.1@%{_kernel_ver_str}}
+%endif
 
-%description -n kernel-%{name}
+%description -n kernel%{_alt_kernel}-%{pname}
 Zaptel telephony Linux kernel driver.
 
-%description -n kernel-%{name} -l pl.UTF-8
+%description -n kernel%{_alt_kernel}-%{pname} -l pl.UTF-8
 Sterownik dla jądra Linuksa do urządzeń telefonicznych Zaptel.
 
+%package -n perl-Zaptel
+Summary:	Perl interface to Zaptel
+Summary(pl.UTF-8):	Perlowy interfejs do Zaptela
+Group:		Development/Languages/Perl
+Requires:	%{pname} = %{version}-%{rel}
+
+%description -n perl-Zaptel
+Perl inferface to Zaptel.
+
+%description -n perl-Zaptel -l pl.UTF-8
+Perlowy interfejs do Zaptela.
+
 %prep
-%setup -q -n %{_base_name}-%{version}
+%setup -q -n %{pname}-%{version}
 %patch0 -p1
-%patch1 -p1
-%{?with_oslec:%patch2 -p1}
+%{?with_oslec:%patch1 -p1}
+%{?with_bristuff:%patch2 -p1}
 %patch3 -p1
+%patch4 -p1
+%patch5 -p1
+%patch6 -p1
 
-%define buildconfigs %{?with_dist_kernel:dist}%{!?with_dist_kernel:nondist}
+%if %{with kernel}
+for a in %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6}; do
+	ln -s $a firmware
+	tar -C firmware -xzf $a
+done
 
-%if %{with eu}
-sed -i -e 's|.*SHORT_FLASH_TIME.*|#define SHORT_FLASH_TIME 1|g' zconfig.h
+cat > download-logger <<'EOF'
+#!/bin/sh
+# keep log of files make wanted to download in firmware/ dir
+echo "$@" >> download.log
+EOF
+chmod a+rx download-logger
 %endif
 
 %build
-%configure
-
-%{__make} prereq zttest \
-        CC="%{__cc}" \
-        LDFLAGS="%{rpmldflags}" \
-        OPTFLAGS="%{rpmcflags}" \
-        KSRC=%{_kernelsrcdir}
+if [ ! -f configure.stamp ]; then
+	rm -f configure.stamp
+	%configure
+	%{__make} prereq zttest \
+		CC="%{__cc}" \
+		LDFLAGS="%{rpmldflags}" \
+		OPTFLAGS="%{rpmcflags}"
+	touch configure.stamp
+fi
 
 %if %{with kernel}
-cp %{SOURCE3} firmware
-cp %{SOURCE4} firmware
-cp %{SOURCE5} firmware
-cp %{SOURCE6} firmware
-cd firmware
-for t in *.tar.gz; do
-        tar -xzf $t
-done
-cd ..
+ln -s ../tor2-cfg.h kernel/tor2-cfg.h
+%build_kernel_modules SUBDIRS=$PWD DOWNLOAD=$PWD/download-logger ZAP="-I$PWD" KSRC=%{_kernelsrcdir} KBUILD_OBJ_M="%{modules}" -m %{modules_in} -C kernel
 
-for cfg in %{buildconfigs}; do
-        rm -rf o
-        mkdir -p modules/$cfg
-        if [ ! -r "%{_kernelsrcdir}/config-$cfg" ]; then
-                exit 1
-        fi
-        chmod 000 modules
-        install -d o/include/linux
-        ln -sf %{_kernelsrcdir}/config-$cfg o/.config
-        ln -sf %{_kernelsrcdir}/Module.symvers-$cfg o/Module.symvers
-        ln -sf %{_kernelsrcdir}/include/linux/autoconf-$cfg.h o/include/linux/autoconf.h
-        %{__make} -j1 -C %{_kernelsrcdir} O=$PWD/o prepare scripts
-        %{__make} -C %{_kernelsrcdir} clean \
-                RCS_FIND_IGNORE="-name '*.ko' -o" \
-                M=$PWD O=$PWD/o \
-                %{?with_verbose:V=1} \
-                KSRC=%{_kernelsrcdir}
-        install -d o/include/config
-        chmod 700 modules
-        %{__make} -C %{_kernelsrcdir} modules \
-                CC="%{__cc}" CPP="%{__cpp}" \
-                M=$PWD O=$PWD/o SUBDIRS=$PWD \
-                DOWNLOAD=wget \
-                %{?with_verbose:V=1} \
-                KSRC=%{_kernelsrcdir}
-        cp *.ko modules/$cfg/
-done
+check_modules() {
+	err=0
+	for a in kernel/{*/,}*.ko; do
+		[[ $a = *-dist.ko ]] && continue
+		[[ $a = *-up.ko ]] && continue
+		[[ $a = *-smp.ko ]] && continue
+		echo >&2 "unpackaged module: ${a%.ko}"
+		err=1
+	done
+
+	[ $err = 0 ] || exit 1
+}
+check_modules
 %endif
 
 %if %{with userspace}
-%{__make} ztcfg torisatool makefw ztmonitor ztspeed libtonezone.so fxstest fxotune \
-        CC="%{__cc} %{rpmcflags}" \
-        LDFLAGS="%{rpmldflags}" \
-        KSRC=%{_kernelsrcdir}
+%{__make} zttool zttest ztmonitor ztspeed sethdlc-new ztcfg \
+	ztcfg-dude fxstest fxotune ztdiag torisatool \
+	%{?with_bristuff:ztpty} libtonezone.so \
+	CC="%{__cc} %{rpmcflags}" \
+	LDFLAGS="%{rpmldflags}" \
+	KSRC=%{_kernelsrcdir}
 %endif
 
 %install
 rm -rf $RPM_BUILD_ROOT
 
 %if %{with kernel}
-for cfg in %{buildconfigs}; do
-        cfgdest=''
-        install -d $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc
-        install modules/$cfg/*.ko \
-                $RPM_BUILD_ROOT/lib/modules/%{_kernel_ver}/misc
-done
+cd kernel
+%install_kernel_modules -m %{modules_in} -d misc
+cd ..
 %endif
 
 %if %{with userspace}
 install -d $RPM_BUILD_ROOT{/sbin,%{_includedir}/linux,/etc/{rc.d/init.d,sysconfig},%{_sbindir},%{_mandir}/{man1,man8}}
-
-%{__make} -o all -o devices install \
-        LIBDIR="$RPM_BUILD_ROOT%{_libdir}" \
-        LIB_DIR="$RPM_BUILD_ROOT%{_libdir}" \
-        INSTALL_PREFIX=$RPM_BUILD_ROOT \
-        DESTDIR=$RPM_BUILD_ROOT \
-        MODCONF=$RPM_BUILD_ROOT/etc/modprobe.conf \
-        KSRC=%{_kernelsrcdir}
-
-install zttest torisatool makefw ztmonitor ztspeed fxstest fxotune $RPM_BUILD_ROOT%{_sbindir}
+%{__make} -o all -o devices -j1 install \
+	LIBDIR="%{_libdir}" \
+	LIB_DIR="%{_libdir}" \
+	INSTALL_PREFIX=$RPM_BUILD_ROOT \
+	DESTDIR=$RPM_BUILD_ROOT \
+	MODCONF=$RPM_BUILD_ROOT/etc/modprobe.conf \
+	KSRC=%{_kernelsrcdir} \
+	PERLLIBDIR=%{perl_vendorlib}
+install zttool zttest ztmonitor ztspeed sethdlc-new ztcfg ztcfg-dude fxstest fxotune ztdiag torisatool %{?with_bristuff:ztpty} $RPM_BUILD_ROOT%{_sbindir}
 install %{SOURCE1} $RPM_BUILD_ROOT/etc/rc.d/init.d/zaptel
 install %{SOURCE2} $RPM_BUILD_ROOT/etc/sysconfig/zaptel
 touch $RPM_BUILD_ROOT/etc/zaptel.conf
 
-install zconfig.h ecdis.h fasthdlc.h biquad.h $RPM_BUILD_ROOT/usr/include/zaptel/
+install kernel/{zconfig.h,ecdis.h,fasthdlc.h,biquad.h} $RPM_BUILD_ROOT/usr/include/zaptel/
 %endif
 
 %clean
 rm -rf $RPM_BUILD_ROOT
 
-%post -n kernel-%{name}
+%post -n kernel%{_alt_kernel}-%{pname}
 %depmod %{_kernel_ver}
 
-%postun -n kernel-%{name}
+%postun -n kernel%{_alt_kernel}-%{pname}
 %depmod %{_kernel_ver}
 
-%if %{with userspace}
 %post init
-/sbin/chkconfig --add %{name}
-if [ -f /var/lock/subsys/%{name} ]; then
-	/etc/rc.d/init.d/%{name} restart 1>&2
-else
-	echo "Run \"/etc/rc.d/init.d/%{name} start\" to initialize %{name}."
-fi
+/sbin/chkconfig --add %{pname}
+%service %{pname} restart
 
 %preun init
 if [ "$1" = "0" ]; then
-	if [ -f /var/lock/subsys/%{name} ]; then
-		/etc/rc.d/init.d/%{name} stop 1>&2
-	fi
-	/sbin/chkconfig --del %{name}
+	%service %{pname} stop
+	/sbin/chkconfig --del %{pname}
 fi
 
+%if %{with userspace}
 %files
 %defattr(644,root,root,755)
-%doc README ChangeLog
+%doc README
 %attr(600,root,root) %config(noreplace) %verify(not md5 mtime size) %{_sysconfdir}/zaptel.conf
 %attr(755,root,root) /sbin/*
 %attr(755,root,root) %{_libdir}/*.so.*
+%if %{with xpp}
 %{_datadir}/zaptel
+%endif
 %{_mandir}/man8/*
 
 %files init
@@ -282,10 +317,17 @@ fi
 %files utils
 %defattr(644,root,root,755)
 %attr(755,root,root) %{_sbindir}/*
+
+%if %{with xpp}
+%files -n perl-Zaptel
+%defattr(644,root,root,755)
+%{perl_vendorlib}/Zaptel
+%{perl_vendorlib}/Zaptel.pm
+%endif
 %endif
 
 %if %{with kernel}
-%files -n kernel-%{name}
+%files -n kernel%{_alt_kernel}-%{pname}
 %defattr(644,root,root,755)
 /lib/modules/%{_kernel_ver}/misc/*.ko*
 %endif
