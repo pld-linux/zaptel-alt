@@ -32,13 +32,13 @@
 Summary:	Zaptel telephony device support
 Summary(pl.UTF-8):	Obsługa urządzeń telefonicznych Zaptel
 Name:		%{pname}-alt%{_alt_kernel}
-Version:	1.4.10.1
+Version:	1.4.12.1
 Release:	%{rel}%{?with_bristuff:.bristuff}
 License:	GPL
 Group:		Base/Kernel
 # there are also E400 and T400 (beside TE400) different drivers
 Source0:        http://te400p.pbxhardware.com/driver/%{pname}-%{version}.tar.gz
-# Source0-md5:	9a600ab54a209f03027ba5bbd3630f67
+# Source0-md5:	611bf60e2de8c1cacb0e2629af4bcd8f
 Source1:	%{pname}.init
 Source2:	%{pname}.sysconfig
 Source3:	%{FIRMWARE_URL}/zaptel-fw-oct6114-064-1.05.01.tar.gz
@@ -54,8 +54,6 @@ Patch1:		%{name}-oslec.patch
 Patch2:		%{name}-bristuff.patch
 Patch3:		%{name}-sparc.patch
 Patch4:		%{name}-kernel.patch
-Patch5:		%{name}-class_device_removed.patch
-Patch6:		%{name}-sem.patch
 URL:		http://www.asterisk.org/
 %if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel%{_alt_kernel}-module-build
@@ -186,8 +184,6 @@ Perlowy interfejs do Zaptela.
 %{?with_bristuff:%patch2 -p1}
 %patch3 -p1
 %patch4 -p1
-%patch5 -p1
-%patch6 -p1
 
 %if %{with kernel}
 for a in %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6}; do
