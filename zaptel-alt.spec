@@ -54,6 +54,7 @@ Patch1:		%{name}-oslec.patch
 Patch2:		%{name}-bristuff.patch
 Patch3:		%{name}-sparc.patch
 Patch4:		%{name}-kernel.patch
+Patch5:		%{name}-pciid.patch
 URL:		http://www.asterisk.org/
 %if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel%{_alt_kernel}-module-build
@@ -184,6 +185,10 @@ Perlowy interfejs do Zaptela.
 %{?with_bristuff:%patch2 -p1}
 %patch3 -p1
 %patch4 -p1
+%patch5 -p1
+cd kernel
+%patch5 -p1
+cd ..
 
 %if %{with kernel}
 for a in %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6}; do

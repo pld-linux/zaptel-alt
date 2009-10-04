@@ -1,0 +1,10 @@
+--- zaptel-1.4.12.1/tor2-hw.h	2009-09-12 18:03:12.000000000 +0200
++++ zaptel-1.4.4/tor2-hw.h	2007-11-02 19:16:33.525949050 +0100
+@@ -124,6 +124,7 @@
+ #endif /* __KERNEL__ */
+ {
+ 	{ PCI_VENDOR_ID_PLX, 0x3000, PCI_ANY_ID, PCI_ANY_ID, 0, 0, (unsigned long)"Tormenta 2 Quad E1/PRA - TE400P" }, /* Tormenta 2 */
++	{ PCI_VENDOR_ID_PLX, 0x4000, PCI_ANY_ID, PCI_ANY_ID, 0, 0, (unsigned long)"Tormenta 2 Quad E1/PRA - TE400P" }, /* Tormenta 2 */
+ 	{ 0, }
+ };
+ 
