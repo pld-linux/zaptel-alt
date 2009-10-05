@@ -36,9 +36,9 @@ Version:	1.4.12.1
 Release:	%{rel}%{?with_bristuff:.bristuff}
 License:	GPL
 Group:		Base/Kernel
-# there are also E400 and T400 (beside TE400) different drivers
-Source0:        http://te400p.pbxhardware.com/driver/%{pname}-%{version}.tar.gz
-# Source0-md5:	611bf60e2de8c1cacb0e2629af4bcd8f
+# there are also T400 and TE400 (beside E400) different drivers
+Source0:        http://e400p.pbxhardware.com/driver/%{pname}-%{version}.tar.gz
+# Source0-md5:	b50b6c4529d6cbafa11e15ff540cd07c
 Source1:	%{pname}.init
 Source2:	%{pname}.sysconfig
 Source3:	%{FIRMWARE_URL}/zaptel-fw-oct6114-064-1.05.01.tar.gz
