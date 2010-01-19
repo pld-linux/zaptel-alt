@@ -55,7 +55,7 @@ Patch2:		%{name}-bristuff.patch
 Patch3:		%{name}-sparc.patch
 Patch4:		%{name}-kernel.patch
 # in theory this patch is wrong but my E-only card works fine with both T and E modes with this patch
-Patch5:		%{name}-alt-pciid.patch
+Patch5:		%{name}-pciid.patch
 URL:		http://www.asterisk.org/
 %if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel%{_alt_kernel}-module-build
