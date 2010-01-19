@@ -160,7 +160,7 @@ Requires(post,postun):	/sbin/depmod
 %if %{with dist_kernel}
 %requires_releq_kernel
 Requires(postun):	%releq_kernel
-%{?with_oslec:Requires:	kernel-misc-oslec = 20070608-0.1@%{_kernel_ver_str}}
+%{?with_oslec:Requires:	kernel-misc-oslec}
 %endif
 
 %description -n kernel%{_alt_kernel}-%{pname}
