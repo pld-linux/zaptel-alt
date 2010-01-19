@@ -56,6 +56,7 @@ Patch3:		%{name}-sparc.patch
 Patch4:		%{name}-kernel.patch
 # in theory this patch is wrong but my E-only card works fine with both T and E modes with this patch
 Patch5:		%{name}-pciid.patch
+Patch6:		%{name}-ec.patch
 URL:		http://www.asterisk.org/
 %if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel%{_alt_kernel}-module-build
@@ -187,6 +188,7 @@ Perlowy interfejs do Zaptela.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+%patch6 -p1
 
 %if %{with kernel}
 for a in %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6}; do

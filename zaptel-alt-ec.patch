@@ -1,0 +1,11 @@
+--- zaptel-1.4.12.1/kernel/zconfig.h~	2008-08-14 01:22:33.000000000 +0200
++++ zaptel-1.4.12.1/kernel/zconfig.h	2010-01-19 10:39:05.721979563 +0100
+@@ -91,7 +90,7 @@
+  * Uncomment for aggressive residual echo suppression under 
+  * MARK2, KB1, and MG2 echo canceler
+  */
+-/* #define AGGRESSIVE_SUPPRESSOR */
++#define AGGRESSIVE_SUPPRESSOR
+ #endif /* ifndef ECHO_CAN_FROMENV */
+ /*
+  * Define to turn off the echo canceler disable tone detector,
