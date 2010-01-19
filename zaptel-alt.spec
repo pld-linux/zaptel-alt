@@ -50,7 +50,8 @@ Source5:	%{FIRMWARE_URL}/zaptel-fw-vpmadt032-1.07.tar.gz
 Source6:	%{FIRMWARE_URL}/zaptel-fw-tc400m-MR6.12.tar.gz
 # Source6-md5:	c57f41fae88f129e14fcaf41e4df90dc
 Patch0:		%{name}-make.patch
-Patch1:		%{name}-oslec.patch
+# http://svn.astfin.org/software/oslec/trunk/kernel/zaptel-1.4.12.1.patch
+Patch1:		zaptel-1.4.12.1.patch
 Patch2:		%{name}-bristuff.patch
 Patch3:		%{name}-sparc.patch
 Patch4:		%{name}-kernel.patch
