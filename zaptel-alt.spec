@@ -189,6 +189,9 @@ Perlowy interfejs do Zaptela.
 %patch3 -p1
 %patch4 -p1
 %patch5 -p1
+cd kernel
+%patch5 -p1
+cd ..
 %patch6 -p1
 
 %if %{with kernel}
