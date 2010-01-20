@@ -3,7 +3,8 @@
 %bcond_without	dist_kernel	# without distribution kernel
 %bcond_without	kernel		# don't build kernel modules
 %bcond_without	userspace	# don't build userspace tools
-%bcond_with	oslec		# with Open Source Line Echo Canceller
+# remember to set echotraining=no or you will hear silence
+%bcond_without	oslec		# with Open Source Line Echo Canceller
 %bcond_with	bristuff	# with bristuff support
 %bcond_without	xpp		# without Astribank
 %bcond_with	verbose
