@@ -7,6 +7,7 @@
 %bcond_without	oslec		# with Open Source Line Echo Canceller
 %bcond_with	bristuff	# with bristuff support
 %bcond_without	xpp		# without Astribank
+%bcond_without	wc
 %bcond_with	verbose
 
 %ifarch sparc
@@ -59,6 +60,7 @@ Patch4:		%{name}-kernel.patch
 # in theory this patch is wrong but my E-only card works fine with both T and E modes with this patch
 Patch5:		%{name}-pciid.patch
 Patch6:		%{name}-ec.patch
+Patch7:		zaptel-alt-kernel2.patch
 URL:		http://www.asterisk.org/
 %if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel%{_alt_kernel}-module-build
@@ -85,8 +87,8 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	modules_2	wct4xxp/ wcte12xp/ %{?with_xpp:xpp/}
 %define	modules_2_in	wct4xxp/wct4xxp,wcte12xp/wcte12xp%{?with_xpp:,xpp/{%{?with_bristuff:xpd_bri,}xpd_fxo,xpd_fxs,xpd_pri,xpp,xpp_usb}}
 %ifnarch alpha
-%define	modules_nalpha	wctc4xxp/ wctdm24xxp/ zttranscode.o
-%define	modules_nalpha_in	wctc4xxp/wctc4xxp,wctdm24xxp/wctdm24xxp,zttranscode
+%define	modules_nalpha	%{?with_wc:wctc4xxp/ wctdm24xxp/} zttranscode.o
+%define	modules_nalpha_in	%{?with_wc:wctc4xxp/wctc4xxp,wctdm24xxp/wctdm24xxp,}zttranscode
 %endif
 %if %{with bristuff}
 %define	modules_bristuff cwain/ qozap/ vzaphfc/ zaphfc/ ztgsm/ opvxa1200.o wcopenpci.o
@@ -194,6 +196,7 @@ cd kernel
 %patch5 -p1
 cd ..
 %patch6 -p1
+%patch7 -p1
 
 %if %{with kernel}
 for a in %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6}; do
