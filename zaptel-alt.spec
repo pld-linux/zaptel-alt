@@ -9,6 +9,7 @@
 %bcond_without	xpp		# without Astribank
 %bcond_without	wc
 %bcond_with	verbose
+%bcond_without	tor2only
 
 %ifarch sparc
 %undefine	with_smp
@@ -28,7 +29,7 @@
 %define		_enable_debug_packages	0
 %endif
 
-%define		rel	1
+%define		rel	1.1
 %define		pname	zaptel
 %define		FIRMWARE_URL http://downloads.digium.com/pub/telephony/firmware/releases
 Summary:	Zaptel telephony device support
@@ -95,8 +96,14 @@ BuildRoot:	%{tmpdir}/%{name}-%{version}-root-%(id -u -n)
 %define	modules_bristuff cwain/ qozap/ vzaphfc/ zaphfc/ ztgsm/ opvxa1200.o wcopenpci.o
 %define	modules_bristuff_in	cwain/cwain,qozap/qozap,vzaphfc/vzaphfc,zaphfc/zaphfc,ztgsm/ztgsm,opvxa1200,wcopenpci
 %endif
+
+%if %{with tor2only}
+%define	modules		zaptel.o ztd-eth.o ztd-loc.o tor2.o ztdummy.o ztdynamic.o
+%define	modules_in	zaptel,ztd-eth,ztd-loc,tor2,ztdummy,ztdynamic
+%else
 %define	modules		%{modules_1} %{modules_2}%{?modules_nalpha: %{modules_nalpha}}%{?modules_bristuff: %{modules_bristuff}}
 %define	modules_in	%{modules_1_in},%{modules_2_in}%{?modules_nalpha:,%{modules_nalpha_in}}%{?modules_bristuff:,%{modules_bristuff_in}}
+%endif
 
 %description
 Zaptel telephony device driver.
@@ -240,7 +247,7 @@ check_modules() {
 
 	[ $err = 0 ] || exit 1
 }
-check_modules
+#check_modules
 %endif
 
 %if %{with userspace}
