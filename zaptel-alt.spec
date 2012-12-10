@@ -61,6 +61,7 @@ Patch4:		%{name}-kernel.patch
 Patch5:		%{name}-pciid.patch
 Patch6:		%{name}-ec.patch
 Patch7:		zaptel-alt-kernel2.patch
+Patch8:		zaptel-alt-kernel3.patch
 URL:		http://www.asterisk.org/
 %if %{with kernel} && %{with dist_kernel}
 BuildRequires:	kernel%{_alt_kernel}-module-build
@@ -197,6 +198,7 @@ cd kernel
 cd ..
 %patch6 -p1
 %patch7 -p1
+%patch8 -p1
 
 %if %{with kernel}
 for a in %{SOURCE3} %{SOURCE4} %{SOURCE5} %{SOURCE6}; do
@@ -224,7 +226,6 @@ if [ ! -f configure.stamp ]; then
 fi
 
 %if %{with kernel}
-ln -s ../tor2-cfg.h kernel/tor2-cfg.h
 %build_kernel_modules SUBDIRS=$PWD DOWNLOAD=$PWD/download-logger ZAP="-I$PWD" KSRC=%{_kernelsrcdir} KBUILD_OBJ_M="%{modules}" -m %{modules_in} -C kernel
 
 check_modules() {

@@ -1,0 +1,87 @@
+diff --git a/Makefile b/Makefile
+index 6231b99..626d872 100644
+--- a/Makefile
++++ b/Makefile
+@@ -12,7 +12,7 @@ TOR2MODE=0
+ # first 3 ports as E1 and the last as T1 that is 1000 in binary = 8
+ #TOR2MODE=8
+ 
+-TOR2_EXEC:=$(shell echo "\#define TOR2MODE $(TOR2MODE)" > tor2-cfg.h)
++TOR2_EXEC:=$(shell echo "\#define TOR2MODE $(TOR2MODE)" > kernel/tor2-cfg.h)
+ 
+ 
+ ifneq ($(KBUILD_EXTMOD),)
+diff --git a/kernel/tor2.c b/kernel/tor2.c
+index 0f35a08..d49c0e0 100644
+--- a/kernel/tor2.c
++++ b/kernel/tor2.c
+@@ -1096,7 +1096,7 @@ static void tor2_tasklet(unsigned long data)
+ static int syncsrc = 0;
+ static int syncnum = 0 /* -1 */;
+ static int syncspan = 0;
+-static spinlock_t synclock = SPIN_LOCK_UNLOCKED;
++static DEFINE_SPINLOCK(synclock);
+ 
+ static int tor2_findsync(struct tor2 *tor)
+ {
+diff --git a/kernel/zaptel-base.c b/kernel/zaptel-base.c
+index b803954..77a3b0e 100644
+--- a/kernel/zaptel-base.c
++++ b/kernel/zaptel-base.c
+@@ -7755,7 +7755,7 @@ static struct file_operations zt_fops = {
+ 	llseek: NULL,
+ 	open: zt_open,
+ 	release: zt_release,
+-	ioctl: zt_ioctl,
++	unlocked_ioctl: zt_ioctl,
+ 	read: zt_read,
+ 	write: zt_write,
+ 	poll: zt_poll,
+@@ -7942,7 +7942,7 @@ struct file_operations sample_fops = {
+         .write  =       NULL,
+         .readdir=       NULL,
+         .poll   =       NULL,
+-        .ioctl  =       sample_ioctl,
++        .unlocked_ioctl  =       sample_ioctl,
+         .mmap   =       NULL,
+         .open   =       sample_open,
+         .flush  =       NULL,
+diff --git a/kernel/zconfig.h b/kernel/zconfig.h
+index f6b2296..df778bf 100644
+--- a/kernel/zconfig.h
++++ b/kernel/zconfig.h
+@@ -23,7 +23,11 @@
+ #if LINUX_VERSION_CODE < KERNEL_VERSION(2,6,18)
+ #include <linux/config.h>
+ #else
+-#include <linux/autoconf.h>
++#if LINUX_VERSION_CODE < KERNEL_VERSION(2, 6, 33)
++# include <linux/autoconf.h>
++#else
++# include <generated/autoconf.h>
++#endif
+ #endif
+ #endif
+ 
+diff --git a/kernel/zttranscode.c b/kernel/zttranscode.c
+index cc26492..8d0ece8 100644
+--- a/kernel/zttranscode.c
++++ b/kernel/zttranscode.c
+@@ -40,7 +40,7 @@
+ 
+ static int debug;
+ LIST_HEAD(trans);
+-static spinlock_t translock = SPIN_LOCK_UNLOCKED;
++static DEFINE_SPINLOCK(translock);
+ 
+ EXPORT_SYMBOL(zt_transcoder_register);
+ EXPORT_SYMBOL(zt_transcoder_unregister);
+@@ -411,7 +411,7 @@ static struct file_operations __zt_transcode_fops = {
+ 	owner:   THIS_MODULE,
+ 	open:    zt_tc_open,
+ 	release: zt_tc_release,
+-	ioctl:   zt_tc_ioctl,
++	unlocked_ioctl:   zt_tc_ioctl,
+ 	read:    zt_tc_read,
+ 	write:   zt_tc_write,
+ 	poll:    zt_tc_poll,
